@@ -22,6 +22,9 @@ export function handle<A extends unknown[]>(fn: (...args: A) => Promise<Response
     } catch (e) {
       if (e instanceof HttpError) return NextResponse.json({ error: e.message, details: e.details }, { status: e.status });
       if (e instanceof ZodError) return NextResponse.json({ error: "Validation failed", details: z.flattenError(e) }, { status: 422 });
+      const code = (e as { code?: string; cause?: { code?: string } })?.cause?.code ?? (e as { code?: string })?.code;
+      if (code === "23505") return NextResponse.json({ error: "A record with the same unique value (slug, SKU or code) already exists" }, { status: 409 });
+      if (code === "23503") return NextResponse.json({ error: "This record is still referenced by other records" }, { status: 409 });
       console.error(e);
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

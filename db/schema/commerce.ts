@@ -60,6 +60,7 @@ export const orders = pgTable(
     paymentProvider: text("payment_provider").notNull(),
     paymentReference: text("payment_reference"),
     paidAt: timestamp("paid_at", { withTimezone: true }),
+    trackingNumber: text("tracking_number"),
     notes: text("notes"),
     ...timestamps,
   },

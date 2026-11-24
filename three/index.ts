@@ -6,3 +6,5 @@ export { loadGarment, disposeLoaders, type GarmentSource } from "./garments/load
 export { buildProceduralGarment, PROCEDURAL_DEFAULTS } from "./garments/procedural";
 export { buildHanger, buildRail } from "./garments/hanger";
 export { applyVariantLook } from "./materials/pbr";
+export { RackStage, type RackItem, type RackEvents, type ViewPreset } from "./RackStage";
+export { FALLBACK_PRESET } from "./engine/defaultPreset";

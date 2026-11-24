@@ -1,0 +1,85 @@
+/* Storefront theme: every colour/font comes from store_settings.brand_theme via CSS variables set in the layout. */
+.sf-root {
+  background: var(--sf-bg);
+  color: var(--sf-fg);
+  font-family: var(--sf-font-body);
+  min-height: 100vh;
+  overflow: hidden;
+}
+.sf-display {
+  font-family: var(--sf-font-display);
+  letter-spacing: -0.01em;
+}
+.sf-muted { color: var(--sf-muted); }
+.sf-accent { color: var(--sf-accent); }
+.sf-line { border-color: color-mix(in srgb, var(--sf-fg) 16%, transparent); }
+.sf-panel {
+  background: color-mix(in srgb, var(--sf-bg) 80%, transparent);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 12%, transparent);
+}
+.sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 28%, transparent);
+  border-radius: var(--sf-radius);
+  padding: 0.65rem 1rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sf-fg);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s, opacity 0.25s;
+}
+.sf-btn:hover:not(:disabled) { border-color: var(--sf-accent); color: var(--sf-accent); }
+.sf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sf-btn-primary { background: var(--sf-fg); color: var(--sf-bg); border-color: var(--sf-fg); }
+.sf-btn-primary:hover:not(:disabled) { background: var(--sf-accent); border-color: var(--sf-accent); color: var(--sf-bg); }
+.sf-chip {
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 22%, transparent);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sf-muted);
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.sf-chip:hover { color: var(--sf-fg); border-color: var(--sf-fg); }
+.sf-chip[aria-selected="true"], .sf-chip[aria-pressed="true"] { color: var(--sf-bg); background: var(--sf-fg); border-color: var(--sf-fg); }
+.sf-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sf-muted);
+}
+.sf-swatch {
+  width: 2rem; height: 2rem; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 30%, transparent);
+  outline-offset: 3px; cursor: pointer; transition: transform 0.2s;
+}
+.sf-swatch:hover { transform: scale(1.08); }
+.sf-swatch[aria-checked="true"] { outline: 1.5px solid var(--sf-fg); }
+.sf-size {
+  min-width: 3rem; padding: 0.6rem 0.8rem; text-align: center; font-size: 0.82rem;
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 24%, transparent);
+  border-radius: var(--sf-radius); background: transparent; color: var(--sf-fg); cursor: pointer; transition: all 0.2s;
+}
+.sf-size:hover:not(:disabled) { border-color: var(--sf-fg); }
+.sf-size[aria-checked="true"] { background: var(--sf-fg); color: var(--sf-bg); border-color: var(--sf-fg); }
+.sf-size:disabled { opacity: 0.35; text-decoration: line-through; cursor: not-allowed; }
+.sf-scroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--sf-fg) 30%, transparent) transparent; }
+@keyframes sf-bump { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.sf-bump { animation: sf-bump 0.45s ease; }
+@keyframes sf-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.sf-rise { animation: sf-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .sf-rise, .sf-bump { animation: none; }
+}

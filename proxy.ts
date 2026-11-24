@@ -8,6 +8,7 @@ import { SESSION_COOKIE, verifySession } from "./server/auth/token";
  */
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  if (pathname === "/admin/login") return NextResponse.next();
   const session = await verifySession(req.cookies.get(SESSION_COOKIE)?.value);
   const isApi = pathname.startsWith("/api/");
 
@@ -29,5 +30,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*", "/account/:path*", "/api/account/:path*"],
+  // /api/admin/uploads is excluded because the proxy buffers request bodies (10 MB cap) and GLBs are larger;
+  // that route enforces requireAdmin() itself like every other admin route.
+  matcher: ["/admin/:path*", "/api/admin/((?!uploads).*)", "/account/:path*", "/api/account/:path*"],
 };

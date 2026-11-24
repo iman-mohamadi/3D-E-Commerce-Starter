@@ -8,6 +8,13 @@
       "when": 1795503125698,
       "tag": "0000_daffy_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795504932742,
+      "tag": "0001_silly_sunfire",
+      "breakpoints": true
     }
   ]
 }

@@ -94,7 +94,7 @@ export const productHotspots = pgTable(
       .references(() => products.id, { onDelete: "cascade" }),
     label: text("label").notNull(),
     description: text("description").notNull().default(""),
-    /** Position in the garment's local space. */
+    /** Garment-local space: origin at the shoulder line / waistband, y points down (hung garment). */
     position3d: jsonb("position_3d").$type<Vec3>().notNull(),
     /** Camera offset from the hotspot when focusing it. */
     cameraOffset: jsonb("camera_offset").$type<Vec3>().notNull(),

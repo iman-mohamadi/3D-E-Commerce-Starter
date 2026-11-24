@@ -144,8 +144,8 @@ export const SEED_PRODUCTS: ProductSeed[] = [
     sizes: SIZES,
     stockBySize: { S: 12, M: 20, L: 16, XL: 8 },
     hotspots: [
-      { label: "300 gsm jersey", description: "Dense combed cotton with a matte, slightly brushed hand.", position: { x: 0.12, y: 1.28, z: 0.1 }, cameraOffset: { x: 0.3, y: 0.1, z: 0.9 } },
-      { label: "Ribbed collar", description: "Double-needle 1x1 rib that keeps its shape wash after wash.", position: { x: 0, y: 1.5, z: 0.09 }, cameraOffset: { x: 0, y: 0.15, z: 0.6 } },
+      { label: "300 gsm jersey", description: "Dense combed cotton with a matte, slightly brushed hand.", position: { x: 0.12, y: -0.25, z: 0.15 }, cameraOffset: { x: 0.3, y: 0.1, z: 0.9 } },
+      { label: "Ribbed collar", description: "Double-needle 1x1 rib that keeps its shape wash after wash.", position: { x: 0, y: 0.06, z: 0.1 }, cameraOffset: { x: 0, y: 0.15, z: 0.6 } },
     ],
   },
   {
@@ -166,9 +166,9 @@ export const SEED_PRODUCTS: ProductSeed[] = [
     sizes: SIZES,
     stockBySize: { S: 6, M: 14, L: 10, XL: 4 },
     hotspots: [
-      { label: "Double-layer hood", description: "Holds its volume without a drawcord clinging to the chest.", position: { x: 0, y: 1.55, z: -0.05 }, cameraOffset: { x: 0.2, y: 0.2, z: 0.9 } },
-      { label: "Loopback fleece", description: "Soft inside, structured outside, pre-shrunk before cutting.", position: { x: -0.18, y: 1.15, z: 0.12 }, cameraOffset: { x: -0.3, y: 0.05, z: 0.8 } },
-      { label: "Hidden pocket", description: "Seam-concealed kangaroo pocket for a clean front.", position: { x: 0, y: 0.95, z: 0.14 }, cameraOffset: { x: 0, y: 0.2, z: 0.8 } },
+      { label: "Double-layer hood", description: "Holds its volume without a drawcord clinging to the chest.", position: { x: 0, y: 0.1, z: -0.06 }, cameraOffset: { x: 0.2, y: 0.2, z: 0.9 } },
+      { label: "Loopback fleece", description: "Soft inside, structured outside, pre-shrunk before cutting.", position: { x: -0.18, y: -0.3, z: 0.16 }, cameraOffset: { x: -0.3, y: 0.05, z: 0.8 } },
+      { label: "Hidden pocket", description: "Seam-concealed kangaroo pocket for a clean front.", position: { x: 0, y: -0.49, z: 0.18 }, cameraOffset: { x: 0, y: 0.2, z: 0.8 } },
     ],
   },
   {
@@ -188,8 +188,8 @@ export const SEED_PRODUCTS: ProductSeed[] = [
     sizes: SIZES,
     stockBySize: { S: 3, M: 6, L: 5, XL: 2 },
     hotspots: [
-      { label: "Wool-cashmere melton", description: "Felted, wind-resistant, with a soft nap that catches light.", position: { x: 0.2, y: 1.2, z: 0.12 }, cameraOffset: { x: 0.4, y: 0.1, z: 1.0 } },
-      { label: "Concealed placket", description: "Horn buttons sit behind the front for an uninterrupted line.", position: { x: 0, y: 1.0, z: 0.15 }, cameraOffset: { x: 0, y: 0.1, z: 0.8 } },
+      { label: "Wool-cashmere melton", description: "Felted, wind-resistant, with a soft nap that catches light.", position: { x: 0.2, y: -0.4, z: 0.19 }, cameraOffset: { x: 0.4, y: 0.1, z: 1.0 } },
+      { label: "Concealed placket", description: "Horn buttons sit behind the front for an uninterrupted line.", position: { x: 0, y: -0.31, z: 0.19 }, cameraOffset: { x: 0, y: 0.1, z: 0.8 } },
     ],
   },
   {
@@ -219,8 +219,8 @@ export const SEED_PRODUCTS: ProductSeed[] = [
     sizes: SIZES,
     stockBySize: { S: 9, M: 15, L: 12, XL: 5 },
     hotspots: [
-      { label: "Bellows pockets", description: "Expandable thigh pockets with snap closures.", position: { x: 0.18, y: 0.55, z: 0.1 }, cameraOffset: { x: 0.4, y: 0.1, z: 0.8 } },
-      { label: "Articulated knee", description: "Pre-bent patterning for movement without bagging.", position: { x: 0.1, y: 0.32, z: 0.08 }, cameraOffset: { x: 0.2, y: 0.05, z: 0.7 } },
+      { label: "Bellows pockets", description: "Expandable thigh pockets with snap closures.", position: { x: 0.16, y: -0.42, z: 0.12 }, cameraOffset: { x: 0.4, y: 0.1, z: 0.8 } },
+      { label: "Articulated knee", description: "Pre-bent patterning for movement without bagging.", position: { x: 0.1, y: -0.7, z: 0.1 }, cameraOffset: { x: 0.2, y: 0.05, z: 0.7 } },
     ],
   },
 ];

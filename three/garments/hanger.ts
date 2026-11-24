@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import type { RackLayout } from "../../shared/schemas/json";
 
-const HOOK_TOP = 0.172;
+export const HOOK_TOP = 0.172;
 
 /** Standard rack hanger. Origin = shoulder line (garment y=0); hook rises ~0.17m above it. */
 export function buildHanger(): THREE.Group {
