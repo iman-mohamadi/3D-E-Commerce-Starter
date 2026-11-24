@@ -56,6 +56,9 @@ export function StoreSettingsForm({ initial, presets }: { initial: SettingsInput
         <Field label="Currency decimals" hint="Changing this does not convert existing prices; they are stored as integer minor units.">
           <input className="input" type="number" min={0} max={4} value={s.currencyDecimals} onChange={(e) => set("currencyDecimals", Math.min(4, Math.max(0, Math.round(Number(e.target.value)))))} />
         </Field>
+        <Field label="Order number prefix" hint={`Orders look like ${s.orderNumberPrefix || "ORD"}-20260101-AB3XK`}>
+          <input className="input font-mono uppercase" maxLength={8} value={s.orderNumberPrefix} onChange={(e) => set("orderNumberPrefix", e.target.value.toUpperCase())} />
+        </Field>
         <Field label="Flat shipping rate"><MoneyInput value={s.flatShippingRate} onChange={(m) => set("flatShippingRate", m)} /></Field>
         <div>
           <Toggle checked={s.freeShippingThreshold !== null} onChange={(on) => set("freeShippingThreshold", on ? 20000 : null)} label="Free shipping threshold" />

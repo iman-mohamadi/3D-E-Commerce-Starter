@@ -6,6 +6,7 @@ export class HttpError extends Error {
     public status: number,
     message: string,
     public details?: unknown,
+    public headers?: Record<string, string>,
   ) {
     super(message);
   }
@@ -20,7 +21,7 @@ export function handle<A extends unknown[]>(fn: (...args: A) => Promise<Response
     try {
       return await fn(...args);
     } catch (e) {
-      if (e instanceof HttpError) return NextResponse.json({ error: e.message, details: e.details }, { status: e.status });
+      if (e instanceof HttpError) return NextResponse.json({ error: e.message, details: e.details }, { status: e.status, headers: e.headers });
       if (e instanceof ZodError) return NextResponse.json({ error: "Validation failed", details: z.flattenError(e) }, { status: 422 });
       const code = (e as { code?: string; cause?: { code?: string } })?.cause?.code ?? (e as { code?: string })?.code;
       if (code === "23505") return NextResponse.json({ error: "A record with the same unique value (slug, SKU or code) already exists" }, { status: 409 });

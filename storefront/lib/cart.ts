@@ -2,7 +2,10 @@
 
 import { useSyncExternalStore } from "react";
 
-/** One line per variant. Prices are snapshots for display; Phase 4 re-prices on the server at checkout. */
+/**
+ * One line per variant. Prices here are display snapshots only: the server re-prices everything
+ * (/api/storefront/cart/quote and checkout) from the database.
+ */
 export interface CartLine {
   variantId: string;
   productId: string;
@@ -17,11 +20,16 @@ export interface CartLine {
   image: string | null;
 }
 
+interface CartState {
+  lines: CartLine[];
+  coupon: string;
+}
+
 const KEY = "atelier-cart-v1";
 const MAX_QTY = 10;
-const EMPTY: CartLine[] = [];
+const EMPTY: CartState = { lines: [], coupon: "" };
 
-let lines: CartLine[] = EMPTY;
+let state: CartState = EMPTY;
 let loaded = false;
 const listeners = new Set<() => void>();
 
@@ -30,24 +38,23 @@ function isLine(x: unknown): x is CartLine {
   return !!l && typeof l.variantId === "string" && typeof l.productId === "string" && typeof l.sku === "string" && Number.isInteger(l.unitPrice) && Number.isInteger(l.quantity) && l.quantity > 0;
 }
 
+function parse(raw: string | null): CartState {
+  try {
+    const o = JSON.parse(raw ?? "null");
+    if (o?.v === 1 && Array.isArray(o.lines)) return { lines: o.lines.filter(isLine), coupon: typeof o.coupon === "string" ? o.coupon.slice(0, 40) : "" };
+  } catch {
+    /* corrupt storage: start empty */
+  }
+  return EMPTY;
+}
+
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
-  try {
-    const raw = JSON.parse(localStorage.getItem(KEY) ?? "null");
-    if (raw?.v === 1 && Array.isArray(raw.lines)) lines = raw.lines.filter(isLine);
-  } catch {
-    lines = EMPTY;
-  }
-  // keep tabs in sync
+  state = parse(localStorage.getItem(KEY));
   window.addEventListener("storage", (e) => {
     if (e.key !== KEY) return;
-    try {
-      const raw = JSON.parse(e.newValue ?? "null");
-      lines = raw?.v === 1 && Array.isArray(raw.lines) ? raw.lines.filter(isLine) : EMPTY;
-    } catch {
-      lines = EMPTY;
-    }
+    state = parse(e.newValue); // keep tabs in sync
     emit(false);
   });
 }
@@ -55,9 +62,9 @@ function load() {
 function emit(persist = true) {
   if (persist) {
     try {
-      localStorage.setItem(KEY, JSON.stringify({ v: 1, lines }));
+      localStorage.setItem(KEY, JSON.stringify({ v: 1, ...state }));
     } catch {
-      /* storage full / disabled: cart still works for this session */
+      /* storage full / disabled: the cart still works for this session */
     }
   }
   listeners.forEach((l) => l());
@@ -70,41 +77,56 @@ function subscribe(cb: () => void) {
 }
 const getSnapshot = () => {
   load();
-  return lines;
+  return state;
 };
 const getServerSnapshot = () => EMPTY;
 
 export const cart = {
   add(line: Omit<CartLine, "quantity">, qty = 1) {
     load();
-    const i = lines.findIndex((l) => l.variantId === line.variantId);
-    lines =
+    const i = state.lines.findIndex((l) => l.variantId === line.variantId);
+    const lines =
       i >= 0
-        ? lines.map((l, j) => (j === i ? { ...l, ...line, quantity: Math.min(MAX_QTY, l.quantity + qty) } : l))
-        : [...lines, { ...line, quantity: Math.min(MAX_QTY, qty) }];
+        ? state.lines.map((l, j) => (j === i ? { ...l, ...line, quantity: Math.min(MAX_QTY, l.quantity + qty) } : l))
+        : [...state.lines, { ...line, quantity: Math.min(MAX_QTY, qty) }];
+    state = { ...state, lines };
     emit();
   },
   setQuantity(variantId: string, quantity: number) {
     load();
-    lines = quantity <= 0 ? lines.filter((l) => l.variantId !== variantId) : lines.map((l) => (l.variantId === variantId ? { ...l, quantity: Math.min(MAX_QTY, quantity) } : l));
+    const lines = quantity <= 0 ? state.lines.filter((l) => l.variantId !== variantId) : state.lines.map((l) => (l.variantId === variantId ? { ...l, quantity: Math.min(MAX_QTY, quantity) } : l));
+    state = { ...state, lines };
     emit();
   },
   remove(variantId: string) {
     cart.setQuantity(variantId, 0);
   },
+  removeMany(variantIds: string[]) {
+    load();
+    const drop = new Set(variantIds);
+    state = { ...state, lines: state.lines.filter((l) => !drop.has(l.variantId)) };
+    emit();
+  },
+  setCoupon(code: string) {
+    load();
+    state = { ...state, coupon: code.trim().toUpperCase().slice(0, 40) };
+    emit();
+  },
   clear() {
-    lines = EMPTY;
+    state = EMPTY;
     emit();
   },
 };
 
-/** React binding (SSR-safe: empty on the server and first client render). */
+/** React binding (SSR-safe: empty on the server and the first client render). */
 export function useCart() {
-  const l = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const s = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   return {
-    lines: l,
-    count: l.reduce((n, x) => n + x.quantity, 0),
-    subtotal: l.reduce((n, x) => n + x.quantity * x.unitPrice, 0),
+    lines: s.lines,
+    coupon: s.coupon,
+    count: s.lines.reduce((n, x) => n + x.quantity, 0),
+    /** display-only estimate; use the server quote for anything authoritative */
+    estimate: s.lines.reduce((n, x) => n + x.quantity * x.unitPrice, 0),
     ...cart,
   };
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "store_settings" ADD COLUMN "order_number_prefix" text DEFAULT 'ORD' NOT NULL;

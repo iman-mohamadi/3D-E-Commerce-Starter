@@ -59,7 +59,7 @@ export function Preloader({ brand, logoUrl, label, progress, ready, locale, onDo
           <div className="sf-display text-4xl">{brand}</div>
         )}
         <div className="h-px w-full overflow-hidden" style={{ background: "color-mix(in srgb, var(--sf-fg) 18%, transparent)" }}>
-          <div className="h-full origin-left" style={{ background: "var(--sf-accent)", transform: `scaleX(${shown / 100})` }} />
+          <div className="h-full origin-left rtl:origin-right" style={{ background: "var(--sf-accent)", transform: `scaleX(${shown / 100})` }} />
         </div>
         <div className="flex w-full items-baseline justify-between sf-label">
           <span>{label}</span>

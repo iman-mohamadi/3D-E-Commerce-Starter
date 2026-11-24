@@ -5,7 +5,7 @@ export * from "./types";
 
 type Factory = () => PaymentAdapter;
 
-const registry = new Map<string, Factory>([["mock", () => new MockPaymentAdapter()]]);
+const registry = new Map<string, Factory>([["mock", () => new MockPaymentAdapter({ gatewayPath: "/checkout/mock-pay" })]]);
 
 /**
  * Register a gateway, e.g. in Phase 2+:

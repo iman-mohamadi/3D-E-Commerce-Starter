@@ -83,3 +83,29 @@
 @media (prefers-reduced-motion: reduce) {
   .sf-rise, .sf-bump { animation: none; }
 }
+
+@keyframes sf-slide { from { transform: translateX(calc(100% * var(--d, 1))); } to { transform: none; } }
+.sf-slide { animation: sf-slide 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .sf-slide { animation: none; } }
+.sf-input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--sf-fg) 24%, transparent);
+  border-radius: var(--sf-radius);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  color: var(--sf-fg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.sf-input:focus { border-color: var(--sf-accent); }
+.sf-input[aria-invalid="true"] { border-color: #e48a7a; }
+.sf-input::placeholder { color: var(--sf-muted); opacity: 0.7; }
+
+/* --- RTL: keep Latin-script data (email, phone, codes, SKUs) readable inside right-to-left pages --- */
+[dir="rtl"] .sf-ltr { direction: ltr; text-align: right; }
+[dir="rtl"] .font-mono { direction: ltr; unicode-bidi: isolate; }
+[dir="rtl"] .sf-ltr::placeholder { text-align: right; }
+/* Persian (cursive) script: tracking would break letter joins, and uppercase is meaningless */
+[lang="fa"] .sf-label, [lang="fa"] .sf-btn, [lang="fa"] .sf-chip, [lang="fa"] .sf-display { letter-spacing: 0; text-transform: none; }
+[lang="fa"] .sf-btn, [lang="fa"] .sf-chip { font-size: 0.9rem; }

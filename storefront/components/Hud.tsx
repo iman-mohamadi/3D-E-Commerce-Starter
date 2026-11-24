@@ -1,47 +1,47 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { cart, useCart, type CartLine } from "../lib/cart";
+import Link from "next/link";
 import type { Dict } from "../lib/i18n";
+import { useStore } from "../lib/store-context";
+import { BagControl } from "./CartDrawer";
 
-interface HudProps {
-  t: Dict;
-  brand: string;
-  logoUrl: string | null;
+export function AccountLink() {
+  const { t, customer } = useStore();
+  return (
+    <Link href={customer ? "/account/orders" : "/login"} className="sf-label hidden hover:opacity-70 sm:inline">
+      {customer ? t.account : t.signIn}
+    </Link>
+  );
+}
+
+export function Brand() {
+  const { brand, logoUrl } = useStore();
+  return (
+    <Link href="/" className="flex items-center gap-3" aria-label={brand}>
+      {logoUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logoUrl} alt={brand} className="h-7 w-auto" />
+      ) : (
+        <span className="sf-display text-2xl leading-none md:text-3xl">{brand}</span>
+      )}
+    </Link>
+  );
+}
+
+interface TopProps {
   racks: { slug: string; title: string }[];
   activeRack: string;
   onRack: (slug: string) => void;
-  money: (minor: number) => string;
-  fmtNum: (n: number) => string;
   dimmed: boolean;
 }
 
-export function TopHud({ t, brand, logoUrl, racks, activeRack, onRack, money, dimmed }: HudProps) {
-  const { count, lines, subtotal } = useCart();
-  const [open, setOpen] = useState(false);
-  const [bump, setBump] = useState(0);
-  const prev = useRef(count);
-  useEffect(() => {
-    if (count > prev.current) setBump((b) => b + 1);
-    prev.current = count;
-  }, [count]);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
+/** Top HUD of the 3D rack: brand, rack switcher, account link, bag + cart drawer. */
+export function TopHud({ racks, activeRack, onRack, dimmed }: TopProps) {
+  const { t } = useStore();
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40">
       <div className="pointer-events-auto flex items-center justify-between gap-4 px-5 py-4 md:px-8 md:py-6">
-        <a href="/" className="flex items-center gap-3" aria-label={brand}>
-          {logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt={brand} className="h-7 w-auto" />
-          ) : (
-            <span className="sf-display text-2xl leading-none md:text-3xl">{brand}</span>
-          )}
-        </a>
+        <Brand />
 
         {racks.length > 1 && (
           <nav className="hidden items-center gap-2 md:flex" role="tablist" aria-label={t.racks} style={{ opacity: dimmed ? 0.35 : 1, transition: "opacity .4s" }}>
@@ -53,12 +53,10 @@ export function TopHud({ t, brand, logoUrl, racks, activeRack, onRack, money, di
           </nav>
         )}
 
-        <button className="sf-btn relative" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={`${t.bag} (${count})`}>
-          {t.bag}
-          <span key={bump} className={`inline-grid min-w-5 place-items-center rounded-full px-1.5 text-[11px] tabular-nums ${bump ? "sf-bump" : ""}`} style={{ background: count ? "var(--sf-accent)" : "transparent", color: count ? "var(--sf-bg)" : "inherit", border: count ? "none" : "1px solid currentColor" }}>
-            {count}
-          </span>
-        </button>
+        <div className="flex items-center gap-4">
+          <AccountLink />
+          <BagControl />
+        </div>
       </div>
 
       {racks.length > 1 && (
@@ -70,49 +68,20 @@ export function TopHud({ t, brand, logoUrl, racks, activeRack, onRack, money, di
           ))}
         </nav>
       )}
-
-      {open && (
-        <div className="pointer-events-auto sf-panel sf-rise absolute end-4 top-16 w-[min(22rem,calc(100vw-2rem))] p-5 md:end-8 md:top-20" role="dialog" aria-label={t.yourBag}>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="sf-display text-2xl">{t.yourBag}</h2>
-            <button className="sf-label hover:opacity-70" onClick={() => setOpen(false)}>{t.close}</button>
-          </div>
-          {lines.length === 0 ? (
-            <p className="sf-muted py-6 text-sm">{t.bagEmpty}</p>
-          ) : (
-            <>
-              <ul className="sf-scroll max-h-[40vh] space-y-4 overflow-y-auto pe-1">
-                {lines.map((l) => <BagLine key={l.variantId} l={l} money={money} t={t} />)}
-              </ul>
-              <div className="mt-5 flex items-baseline justify-between border-t pt-4 sf-line">
-                <span className="sf-label">{t.subtotal}</span>
-                <span className="text-lg">{money(subtotal)}</span>
-              </div>
-              <button className="sf-btn mt-4 w-full" disabled>{t.checkoutSoon}</button>
-            </>
-          )}
-        </div>
-      )}
     </header>
   );
 }
 
-function BagLine({ l, money, t }: { l: CartLine; money: (n: number) => string; t: Dict }) {
+/** Slim header for non-3D pages (checkout, account, confirmation). */
+export function SiteHeader() {
   return (
-    <li className="flex items-start gap-3 text-sm">
-      <span className="mt-0.5 h-9 w-9 shrink-0 rounded-sm border sf-line" style={{ background: l.colorHex }} aria-hidden />
-      <div className="min-w-0 flex-1">
-        <div className="truncate">{l.title}</div>
-        <div className="sf-muted text-xs">{l.colorName} / {l.size}</div>
-        <div className="mt-1.5 flex items-center gap-2 text-xs">
-          <button className="sf-chip !px-2 !py-0.5" onClick={() => cart.setQuantity(l.variantId, l.quantity - 1)} aria-label="-">-</button>
-          <span className="tabular-nums">{l.quantity}</span>
-          <button className="sf-chip !px-2 !py-0.5" onClick={() => cart.setQuantity(l.variantId, l.quantity + 1)} aria-label="+">+</button>
-          <button className="sf-muted ms-2 underline-offset-4 hover:underline" onClick={() => cart.remove(l.variantId)}>{t.remove}</button>
-        </div>
+    <header className="flex items-center justify-between gap-4 border-b px-5 py-4 sf-line md:px-10 md:py-5">
+      <Brand />
+      <div className="flex items-center gap-4">
+        <AccountLink />
+        <BagControl />
       </div>
-      <div className="tabular-nums">{money(l.unitPrice * l.quantity)}</div>
-    </li>
+    </header>
   );
 }
 
@@ -128,7 +97,7 @@ interface BottomProps {
   rtl: boolean;
 }
 
-/** Bottom navigation: hint, prev/next, counter. Arrows are *visual* (left/right) in both directions. */
+/** Bottom navigation: hint, prev/next, counter. Arrows are visual (left/right) in both directions. */
 export function BottomHud({ t, visible, index, total, title, fmtNum, onPrev, onNext, rtl }: BottomProps) {
   return (
     <div
@@ -136,11 +105,12 @@ export function BottomHud({ t, visible, index, total, title, fmtNum, onPrev, onN
       style={{ opacity: visible ? 1 : 0 }}
       aria-hidden={!visible}
     >
-      <div className="pointer-events-auto flex items-center gap-5">
+      {/* physical left/right arrows in both directions: the left button always moves the rack left (ltr here, text restored below) */}
+      <div className="pointer-events-auto flex items-center gap-5" dir="ltr">
         <button className="sf-btn !rounded-full !px-3" onClick={onPrev} aria-label={rtl ? t.next : t.previous} tabIndex={visible ? 0 : -1}>
           <span aria-hidden>&larr;</span>
         </button>
-        <div className="min-w-36 text-center">
+        <div className="min-w-36 text-center" dir={rtl ? "rtl" : "ltr"}>
           <div className="sf-display text-xl leading-tight">{title}</div>
           <div className="sf-label mt-1 tabular-nums">{fmtNum(index + 1)} / {fmtNum(total)}</div>
         </div>

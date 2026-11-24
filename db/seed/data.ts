@@ -32,10 +32,13 @@ export const DARK_ATELIER_PRESET: { slug: string; name: string; config: StudioPr
       environmentIntensity: 0.35,
       ambient: { color: "#8a8fa3", intensity: 0.25 },
       key: { color: "#fff4e6", intensity: 2.4, position: { x: 2.5, y: 4, z: 3 }, castShadow: true },
-      fill: { color: "#7d8cff", intensity: 0.6, position: { x: -3, y: 2, z: 2 } },
-      rim: { color: "#ffd9b0", intensity: 1.4, position: { x: 0, y: 3, z: -3.5 } },
+      // subtle cool fill from the front-right gives fabric a soft specular sheen
+      fill: { color: "#a9b6ff", intensity: 0.9, position: { x: 3.2, y: 1.8, z: 2.6 } },
+      // back/side lights carve the silhouette of dark garments out of the charcoal backdrop
+      rim: { color: "#dfe6ff", intensity: 3.4, position: { x: -2.8, y: 2.8, z: -2.2 } },
       spots: [
-        { color: "#ffffff", intensity: 18, position: { x: 0, y: 4.5, z: 1.5 }, angle: 0.5, penumbra: 0.8, target: { x: 0, y: 1, z: 0 }, castShadow: true },
+        { color: "#ffffff", intensity: 14, position: { x: 0, y: 4.5, z: 1.5 }, angle: 0.5, penumbra: 0.8, target: { x: 0, y: 1, z: 0 }, castShadow: true },
+        { color: "#ffd9b0", intensity: 26, position: { x: 2.8, y: 3.4, z: -2 }, angle: 0.65, penumbra: 0.7, target: { x: 0, y: 1.1, z: 0 } },
       ],
       floor: { color: "#111114", roughness: 0.35, metalness: 0.2, reflective: true },
     },

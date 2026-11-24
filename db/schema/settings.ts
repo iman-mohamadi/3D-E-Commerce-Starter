@@ -48,6 +48,8 @@ export const storeSettings = pgTable(
     freeShippingThreshold: integer("free_shipping_threshold"),
     flatShippingRate: integer("flat_shipping_rate").notNull().default(0),
     paymentProvider: text("payment_provider").notNull().default("mock"),
+    /** Prefix for human-readable order numbers: PREFIX-YYYYMMDD-XXXXX */
+    orderNumberPrefix: text("order_number_prefix").notNull().default("ORD"),
     ...timestamps,
   },
   (t) => [check("store_settings_singleton", sql`${t.id} = 1`)],

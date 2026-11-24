@@ -5,6 +5,7 @@ import type { PublicProduct, PublicVariant } from "@/shared/storefront";
 import type { ViewPreset } from "@/three";
 import type { Dict } from "../lib/i18n";
 import { sortSizes } from "../lib/sizes";
+import { useStore } from "../lib/store-context";
 
 interface Props {
   t: Dict;
@@ -45,6 +46,7 @@ export function colorwaysOf(variants: PublicVariant[]): Colorway[] {
 /** Editorial side panel (desktop, at the inline-end edge) / compact bottom sheet (mobile). Fully logical-property based for RTL. */
 export function Inspector(p: Props) {
   const { t, product } = p;
+  const { iso } = useStore();
   const colors = colorwaysOf(product.variants);
   const forColor = product.variants.filter((v) => v.colorName === p.colorName);
   const sizes = sortSizes([...new Set(forColor.map((v) => v.size))], product.sizeGuide);
@@ -135,7 +137,7 @@ export function Inspector(p: Props) {
 
       <div className="sticky bottom-0 -mx-5 mt-8 px-5 pb-1 pt-4 md:-mx-8 md:px-8" style={{ background: "linear-gradient(to top, color-mix(in srgb, var(--sf-bg) 96%, transparent) 60%, transparent)" }}>
         <button className={`sf-btn w-full ${canAdd ? "sf-btn-primary" : ""}`} disabled={!canAdd} onClick={p.onAdd} aria-live="polite">
-          {p.added ? `${t.added}  ✓` : chosen && !chosen.inStock ? t.outOfStock : canAdd ? `${t.addToBag} - ${p.money(price)}` : t.selectSize}
+          {p.added ? `${t.added}  ✓` : chosen && !chosen.inStock ? t.outOfStock : canAdd ? `${t.addToBag} · ${iso(p.money(price))}` : t.selectSize}
         </button>
       </div>
     </aside>

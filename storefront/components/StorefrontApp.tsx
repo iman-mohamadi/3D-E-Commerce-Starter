@@ -230,7 +230,7 @@ export function StorefrontApp({ data, initialRack }: { data: StorefrontData; ini
 
       {webgl === "none" && <FallbackGrid t={t} products={products} money={money} onOpen={openProduct} />}
 
-      <TopHud t={t} brand={settings.brandName} logoUrl={settings.logoUrl} racks={racks.map((r) => ({ slug: r.slug, title: r.title }))} activeRack={rack.slug} onRack={switchRack} money={money} fmtNum={fmtNum} dimmed={inspecting} />
+      <TopHud racks={racks.map((r) => ({ slug: r.slug, title: r.title }))} activeRack={rack.slug} onRack={switchRack} dimmed={inspecting} />
 
       {webgl !== "none" && products.length > 0 && (
         <BottomHud t={t} visible={!inspecting && revealed} index={Math.min(focusIndex, products.length - 1)} total={products.length} title={currentProduct?.title ?? ""} fmtNum={fmtNum} rtl={rtl} onPrev={() => controller.current?.stepVisual(-1)} onNext={() => controller.current?.stepVisual(1)} />

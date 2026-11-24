@@ -126,6 +126,11 @@ export const settingsInput = z.object({
   freeShippingThreshold: minor.nullable(),
   flatShippingRate: minor,
   studioThemePreset: z.string().min(1),
+  orderNumberPrefix: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^[A-Z0-9]{2,8}$/, "2-8 letters or digits"),
 });
 export type SettingsInput = z.infer<typeof settingsInput>;
 

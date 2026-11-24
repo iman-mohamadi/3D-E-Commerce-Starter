@@ -29,6 +29,7 @@ export default async function SettingsPage() {
             freeShippingThreshold: s.freeShippingThreshold,
             flatShippingRate: s.flatShippingRate,
             studioThemePreset: s.studioThemePreset,
+            orderNumberPrefix: s.orderNumberPrefix,
           }}
         />
       </section>
